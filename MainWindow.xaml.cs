@@ -84,16 +84,19 @@ public partial class MainWindow : Window
     private void Hndl_Save(object sender, RoutedEventArgs e)
     {
         // Check if the image source is set
-        if ( screenshot != null)
-        {
+        if (screenshot != null)
+        { 
+            string fileaname = $"{DateTime.Now.ToString("yyyy/MM/dd hh-mm-ss")}.png";
             // Save the transparent bitmap to a file (PNG supports transparency)
             if ("please select the Path" != Folder.Text)
             {
-                screenshot.Save($"{Folder.Text}\\{DateTime.Now.ToString("yyyy/MM/dd hh-mm-ss")}.png", System.Drawing.Imaging.ImageFormat.Png);
+                screenshot.Save($"{Folder.Text}\\{fileaname}", System.Drawing.Imaging.ImageFormat.Png);
             }
             else
             {
-                screenshot.Save($"{Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)}\\Saved Pictures\\{DateTime.Now.ToString("yyyy/MM/dd \n hh-mm-ss")}.png", System.Drawing.Imaging.ImageFormat.Png);
+                string defaultPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Saved Pictures");
+                string filePath = System.IO.Path.Combine(defaultPath,fileaname);
+                screenshot.Save(filePath, System.Drawing.Imaging.ImageFormat.Png);
             }
             System.Windows.MessageBox.Show("Image saved successfully! ");
             ScreenShot.Source = null;
