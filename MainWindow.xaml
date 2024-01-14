@@ -44,7 +44,9 @@
             </TabItem>
             <TabItem Header="Action" Width="100">
                 <Grid >
-                    <ListView Name="ActionList" Height="600"  HorizontalAlignment="Left" Margin="10,10,10,10" Width="Auto" VerticalAlignment="Center">
+                    <CheckBox x:Name="chkkeyboard"  Content="Keyboard" Margin="15,20,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="74" Height="22"   ></CheckBox>
+                    <CheckBox x:Name="chkmouse" Content="Mouse" Margin="107,20,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" />
+                    <ListView Name="ActionList" Height="550"  HorizontalAlignment="Left" Margin="10,50,10,10" Width="Auto" VerticalAlignment="Center">
                         <ListView.View>
                             <GridView AllowsColumnReorder="True" ColumnHeaderToolTip="P_Entries">
                                 <GridViewColumn  Header="Type" Width="150"/>
@@ -56,8 +58,8 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        
+
         <ProgressBar Grid.Column="0" VerticalAlignment="Bottom" Height="15" Grid.ColumnSpan="3"/>
-   
+
     </Grid>
 </Window>
