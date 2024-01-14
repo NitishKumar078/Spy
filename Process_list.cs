@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Spy
 {
-    public class Process_list
+    internal class Process_list
     {
-        public void process_list(ObservableCollection<object> p_Entries)
+        public static void process_list(ObservableCollection<object> p_Entries)
         {
 
             Process[] processes = Process.GetProcesses();

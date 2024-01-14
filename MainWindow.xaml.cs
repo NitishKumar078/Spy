@@ -65,9 +65,7 @@ public partial class MainWindow : Window
     {
         DataContext = this;
         p_Entries = new ObservableCollection<object>();
-        Process_list obj = new Process_list();
-        obj.process_list(p_Entries);
-        // TakeScreenshot.process_list(p_Entries);
+        Process_list.process_list(p_Entries); /* Creation of the List of the Process/window runing*/
         InitializeComponent();
     }
 
@@ -166,14 +164,12 @@ public partial class MainWindow : Window
 
     private void Hndl_Highlight_win(object sender, RoutedEventArgs e)
     {
-        // Assuming each item in the ListView has an 'id' property
-        int processId = ((p_Entries)ProcessList.SelectedItem).Id;
-
-
-        Process process = Process.GetProcessById(processId);
-
         if (ProcessList.SelectedItem != null)
         {
+            // Assuming each item in the ListView has an 'id' property
+            int processId = ((p_Entries)ProcessList.SelectedItem).Id;
+
+            Process process = Process.GetProcessById(processId);
             if (process != null)
             {
                 IntPtr hWnd = process.MainWindowHandle;
@@ -214,7 +210,10 @@ public partial class MainWindow : Window
                 Console.WriteLine("Process not found.");
             }
         }
-
+        else
+        {
+            System.Windows.MessageBox.Show("Please Select any window which is Listed ... ");
+        }
 
     }
     private void OpenDirectoryDialog()
