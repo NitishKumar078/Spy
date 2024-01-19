@@ -20,7 +20,8 @@
 
         <Button Content="Capture Screen" Name="btnCaptureScreen" HorizontalAlignment="Right" Margin="0,10,18,0" Click="Hndl_CaptureScreen" VerticalAlignment="Top"/>
         <Button Content="Highlight Window" HorizontalAlignment="Left" Margin="10,10,10,0" Click="Hndl_Highlight_win" VerticalAlignment="Top"/>
-
+        <Button Content="Start" HorizontalAlignment="Left" Margin="150,10,10,0" Width="80"  VerticalAlignment="Top" Click="Hndl_ActioList"/>
+        <Button Content="Stop" HorizontalAlignment="Left" Margin="250,10,10,0" Width="80"  VerticalAlignment="Top" Click="Hndl_removeHook"/>
         <ListView Name="ProcessList" Height="560" ItemsSource="{Binding P_Entries}" HorizontalAlignment="Center" Width="AUto" VerticalAlignment="Center">
             <ListView.View>
                 <GridView AllowsColumnReorder="True" ColumnHeaderToolTip="P_Entries">
@@ -33,7 +34,20 @@
 
         <GridSplitter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Background="DarkGray" ShowsPreview="True" Height="630" Margin="0,0,0,20" Width="5"/>
         <TabControl Grid.Column="2" >
-            <TabItem Header="Image" Width="100">
+            <TabItem Header="Action" Width="100">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="23*"/>
+                        <ColumnDefinition Width="469*"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="chkkeyboard" IsChecked="True" Content="Keyboard" Margin="15,20,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="74" Height="22" Grid.ColumnSpan="2"   ></CheckBox>
+                    <CheckBox x:Name="chkmouse" IsChecked="True" Content="Mouse" Margin="84,20,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Grid.Column="1" />
+                    <ListView Name="ActionList" Height="550"  HorizontalAlignment="Left" Margin="10,73,0,0" Width="450" VerticalAlignment="Top" Grid.ColumnSpan="2" >
+
+                    </ListView>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Screen Capture" Width="100">
                 <Grid>
                     <Image Name="ScreenShot" HorizontalAlignment="Center" Height="400" Margin="10,30,10,0" VerticalAlignment="Top" Width="Auto"/>
                     <TextBox HorizontalAlignment="Left" Margin="15,0,0,50" TextWrapping="Wrap" Name="Folder" Text="Please select the Path" VerticalAlignment="Bottom" Width="380"/>
@@ -42,21 +56,7 @@
                     <Label Content="Nitish kumar" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Height="25" Margin="0,0,0,15"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Action" Width="100">
-                <Grid >
-                    <CheckBox x:Name="chkkeyboard"  Content="Keyboard" Margin="15,20,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="74" Height="22"   ></CheckBox>
-                    <CheckBox x:Name="chkmouse" Content="Mouse" Margin="107,20,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" />
-                    <ListView Name="ActionList" Height="550"  HorizontalAlignment="Left" Margin="10,50,10,10" Width="Auto" VerticalAlignment="Center">
-                        <ListView.View>
-                            <GridView AllowsColumnReorder="True" ColumnHeaderToolTip="P_Entries">
-                                <GridViewColumn  Header="Type" Width="150"/>
-                                <GridViewColumn  Header="Action" Width="100"/>
-                                <GridViewColumn  Header="Data" Width="200"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
-            </TabItem>
+           
         </TabControl>
 
         <ProgressBar Grid.Column="0" VerticalAlignment="Bottom" Height="15" Grid.ColumnSpan="3"/>

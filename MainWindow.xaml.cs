@@ -20,9 +20,10 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Media3D;
 using System.Drawing.Drawing2D;
-using static Spy.MainWindow;
 using static System.Net.Mime.MediaTypeNames;
 using System.Numerics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
 
 
 namespace Spy;
@@ -30,8 +31,10 @@ namespace Spy;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow : System.Windows.Window
 {
+    
+
     Bitmap? screenshot ;
 
     [DllImport("user32.dll")]
@@ -60,17 +63,20 @@ public partial class MainWindow : Window
         public int Bottom;
     }
 
-
+  
     public MainWindow()
     {
         DataContext = this;
         p_Entries = new ObservableCollection<object>();
         Process_list obj = new Process_list();
         obj.process_list(p_Entries);
+       
+
         // TakeScreenshot.process_list(p_Entries);
         InitializeComponent();
+       // ActionList.Items.Add("lo");
     }
-
+    
     public ObservableCollection<object> p_Entries;
 
     public ObservableCollection<object> P_Entries
@@ -109,6 +115,21 @@ public partial class MainWindow : Window
         }
     }
 
+    private void Hndl_ActioList(object sender, RoutedEventArgs e)
+    {
+        if (ProcessList.SelectedItem != null)
+        {
+            int processId = ((p_Entries)ProcessList.SelectedItem).Id;
+            bool isKChecked = (bool)chkkeyboard.IsChecked;
+            bool isMChecked = (bool)chkmouse.IsChecked;
+            Actionlist.SetActionList(ActionList);
+            Actionlist.StartHook(processId, isKChecked, isMChecked);
+        }
+    }
+    private void Hndl_removeHook(object sender, RoutedEventArgs e)
+    {
+        Actionlist.removeHook();
+    }
     private void Hndl_CaptureScreen(object sender, RoutedEventArgs e)
     {
         if (ProcessList.SelectedItem != null)
@@ -238,6 +259,10 @@ public partial class MainWindow : Window
         OpenDirectoryDialog();
     }
 
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
 }
 
 public class p_Entries
