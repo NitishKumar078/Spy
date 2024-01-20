@@ -20,9 +20,10 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Media3D;
 using System.Drawing.Drawing2D;
-using static Spy.MainWindow;
 using static System.Net.Mime.MediaTypeNames;
 using System.Numerics;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
 
 
 namespace Spy;
@@ -30,8 +31,10 @@ namespace Spy;
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow : System.Windows.Window
 {
+    
+
     Bitmap? screenshot ;
 
     [DllImport("user32.dll")]
@@ -60,22 +63,23 @@ public partial class MainWindow : Window
         public int Bottom;
     }
 
-
+  
     public MainWindow()
     {
         DataContext = this;
-        p_Entries = new ObservableCollection<object>();
-        Process_list.process_list(p_Entries); /* Creation of the List of the Process/window runing*/
+        RunningProcesses = new ObservableCollection<p_Entries>();
+        Process_list.process_list(RunningProcesses);
+
+        // TakeScreenshot.process_list(p_Entries);
         InitializeComponent();
+       // ActionList.Items.Add("lo");
     }
+    
+    public ObservableCollection<p_Entries>  RunningProcesses { get; set; }
 
-    public ObservableCollection<object> p_Entries;
-
-    public ObservableCollection<object> P_Entries
+    public void hndl_refresh(object sender, RoutedEventArgs e)
     {
-        get { return p_Entries; }
-        set { p_Entries = value; }
-        // pname.ItemSource = p_Entries;
+        Process_list.process_list(RunningProcesses);
     }
 
 
@@ -107,6 +111,25 @@ public partial class MainWindow : Window
         }
     }
 
+    private void Hndl_ActioList(object sender, RoutedEventArgs e)
+    {
+        if (ProcessList.SelectedItem != null)
+        {
+            int processId = ((p_Entries)ProcessList.SelectedItem).Id;
+            bool isKChecked = (bool)chkkeyboard.IsChecked;
+            bool isMChecked = (bool)chkmouse.IsChecked;
+            Actionlist.SetActionList(ActionList);
+            Actionlist.StartHook(processId, isKChecked, isMChecked);
+        }
+    }
+
+    // Method to add a new process to the ObservableCollection
+  
+
+    private void Hndl_removeHook(object sender, RoutedEventArgs e)
+    {
+        Actionlist.removeHook();
+    }
     private void Hndl_CaptureScreen(object sender, RoutedEventArgs e)
     {
         if (ProcessList.SelectedItem != null)
@@ -164,6 +187,12 @@ public partial class MainWindow : Window
 
     private void Hndl_Highlight_win(object sender, RoutedEventArgs e)
     {
+        // Assuming each item in the ListView has an 'id' property
+        int processId = ((p_Entries)ProcessList.SelectedItem).Id;
+
+
+        Process process = Process.GetProcessById(processId);
+
         if (ProcessList.SelectedItem != null)
         {
             // Assuming each item in the ListView has an 'id' property
@@ -236,6 +265,7 @@ public partial class MainWindow : Window
     {
         OpenDirectoryDialog();
     }
+
 
 }
 
