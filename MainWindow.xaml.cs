@@ -25,6 +25,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Numerics;
 
 
+
 namespace Spy;
 
 /// <summary>
@@ -76,6 +77,7 @@ public partial class MainWindow : Window
     public void hndl_refresh(object sender, RoutedEventArgs e)
     {
         Process_list.process_list(RunningProcesses);
+        progress.Value = 0;
     }
 
 
@@ -127,6 +129,7 @@ public partial class MainWindow : Window
     {
         if (ProcessList.SelectedItem != null)
         {
+            progress.Value = 10;
             int processId = ((p_Entries)ProcessList.SelectedItem).Id;
 
             Process process = Process.GetProcessById(processId);
@@ -135,7 +138,7 @@ public partial class MainWindow : Window
             {
                 IntPtr hWnd = process.MainWindowHandle;
                 RECT windowRect;
-
+                progress.Value = 30;
                 ShowWindow(hWnd, SW_MAXIMIZE);
                 Thread.Sleep(1000);
                 SetForegroundWindow(hWnd);
@@ -143,17 +146,18 @@ public partial class MainWindow : Window
 
                 int borderWidth = windowRect.Right - windowRect.Left;
                 int borderHeight = windowRect.Bottom - windowRect.Top;
-
+                progress.Value = 40;
                 // Capture screenshot
                 screenshot = new Bitmap(borderWidth, borderHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
                 using (Graphics graphics = Graphics.FromImage(screenshot))
                 {
                     graphics.CopyFromScreen(windowRect.Left, windowRect.Top, 0, 0, new System.Drawing.Size(borderWidth, borderHeight), CopyPixelOperation.SourceCopy);
+                    progress.Value = 60;
                 }
 
                 ScreenShot.Source = ConvertBitmapToImageSource(screenshot);
-               
+                progress.Value = 100;
                 // Send the window to the back
                 ShowWindow(hWnd, SW_SHOWMINNOACTIVE);
             }
@@ -166,13 +170,13 @@ public partial class MainWindow : Window
         {
             bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
             memory.Position = 0;
-
+            progress.Value = 70;
             BitmapImage bitmapImage = new BitmapImage();
             bitmapImage.BeginInit();
             bitmapImage.StreamSource = memory;
             bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
             bitmapImage.EndInit();
-
+            progress.Value = 80;
             return bitmapImage;
         }
 

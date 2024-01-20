@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Spy"
         mc:Ignorable="d"
         Title="Spy" Height="700" Width="1000" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Background="White">
     <Grid>
@@ -59,25 +58,26 @@
                             <Button Content="Start" HorizontalAlignment="Left" Margin="15,42,0,0" Width="80"  VerticalAlignment="Top" Click="Hndl_ActioList" Grid.ColumnSpan="2" Height="20"/>
                             <Button Content="Stop" HorizontalAlignment="Left" Margin="359,42,0,0" Width="80"  VerticalAlignment="Top" Click="Hndl_removeHook" Height="20"/>
 
-
-                            <ListView Background="#FFEAECED" Name="ActionList" Height="500"  HorizontalAlignment="Left" Margin="10,73,0,0" Width="450" VerticalAlignment="Top" Grid.ColumnSpan="4" BorderBrush="#FF88898E"  >
-
-                            </ListView>
+                            <ListView Background="#FFF6F8F8" Name="ActionList" Height="517"  HorizontalAlignment="Left" Margin="10,73,0,0" Width="458" VerticalAlignment="Top" BorderBrush="#FFA4A5A7"  />
                         </Grid>
                     </TabItem>
                     <TabItem Header="Screen Capture" Width="100">
                         <Grid>
+                            <TextBlock x:Name="Note"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="323" Height="32" Margin="15,0,0,106" FontFamily="Segoe UI Light" Cursor="Help" IsEnabled="False" TextWrapping="Wrap" Foreground="#FFE82828">  
+                            Note : Default the image will be saved in the mentioned below     C:\Users\Pictures\Saved Pictures
+                            </TextBlock>
                             <Image Name="ScreenShot" HorizontalAlignment="Center" Height="400" Margin="10,30,10,0" VerticalAlignment="Top" Width="Auto"/>
+                            <Label />
                             <TextBox HorizontalAlignment="Left" Margin="15,0,0,50" TextWrapping="Wrap" Name="Folder" Text="Please select the Path" VerticalAlignment="Bottom" Width="380"/>
                             <Button Content="Open Directory" HorizontalAlignment="Left" Margin="14,0,0,73" VerticalAlignment="Bottom" Width="80" Click="Hndl_SetDirectoryDialog"/>
                             <Button Content="Save" HorizontalAlignment="Right" Margin="0,0,10,50" VerticalAlignment="Bottom" Width="80" Click="Hndl_Save"/>
-                            <Label Content="Nitish kumar" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Height="25" Margin="0,0,0,15"/>
+
                         </Grid>
                     </TabItem>
                 </TabControl>
 
             </Grid>
-            <ProgressBar VerticalAlignment="Bottom" Height="20"  Width="1000" HorizontalAlignment="Left"   Grid.RowSpan="1" Grid.ColumnSpan="3"/>
+            <ProgressBar x:Name="progress" VerticalAlignment="Bottom" Height="20"  Width="1000" HorizontalAlignment="Left"   Grid.RowSpan="1" Grid.ColumnSpan="3"/>
         </Grid>
 
     </Grid>
