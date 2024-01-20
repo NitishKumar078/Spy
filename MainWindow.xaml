@@ -6,113 +6,79 @@
         xmlns:local="clr-namespace:Spy"
         mc:Ignorable="d"
         Title="Spy" Height="700" Width="1000" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Background="White">
-    <TabControl>
-        <TabItem Header="Tab 1">
-            <Grid x:Name="main" Margin="0,10,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
+    <Grid>
+        <Grid x:Name="main" Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="670" />
+                <RowDefinition x:Name="PBar" Height="20"/>
+            </Grid.RowDefinitions>
 
+            <Grid>
+                <Button Content="Refresh" HorizontalAlignment="Left" Margin="10,10,0,0" Width="50" VerticalAlignment="Top" Click="hndl_refresh"/>
                 <Button Content="Capture Screen" Name="btnCaptureScreen" HorizontalAlignment="Right" Margin="0,10,18,0" Click="Hndl_CaptureScreen" VerticalAlignment="Top"/>
-                <Button Content="Highlight Window" HorizontalAlignment="Left" Margin="10,10,10,0" Click="Hndl_Highlight_win" VerticalAlignment="Top"/>
-
-                
-                <ListView Name="ProcessList" Height="560" ItemsSource="{Binding P_Entries}" HorizontalAlignment="Left" Width="470" Margin="10" VerticalAlignment="Center" >
+                <Button Content="Highlight Window" HorizontalAlignment="Left" Margin="100,10,10,0" Click="Hndl_Highlight_win" VerticalAlignment="Top"/>
+                <ListView ItemsSource="{Binding RunningProcesses}"  Name="ProcessList" Height="560" HorizontalAlignment="Center" Width="AUto" VerticalAlignment="Center" >
                     <ListView.View>
-                        <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="P_Entries">
-                            <GridViewColumn DisplayMemberBinding="{Binding ProcessName}" Header="Process Name" Width="150"/>
-                            <GridViewColumn DisplayMemberBinding="{Binding MainWindowTitle}" Header="WindowTitle" Width="200"/>
-                            <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Process ID" Width="80"/>
+                        <GridView>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ProcessName}" Width="150"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding MainWindowTitle}" Header="WindowTitle" Width="220"/>
+                            <GridViewColumn Header="Process ID" DisplayMemberBinding="{Binding Id}" Width="80" />
+                            <!-- Add more columns as needed -->
                         </GridView>
                     </ListView.View>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu>
+                                        <MenuItem Header="MenuItem1" />
+                                        <MenuItem Header="MenuItem2"  />
+                                        <!-- Add more menu items as needed -->
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
                 </ListView>
+            </Grid>
+
+            <GridSplitter Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" Background="DarkGray" ShowsPreview="True" Height="630" Width="4"/>
+
+            <Grid Grid.Column="2" Height="Auto">
+                <TabControl Grid.Column="2">
+                    <TabItem Header="Action" Width="100" Height="20" VerticalAlignment="Bottom">
+                        <Grid >
+
+                            <CheckBox x:Name="chkkeyboard" IsChecked="True" Content="Keyboard" Margin="83,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="74" Height="22"   />
+                            <CheckBox x:Name="chkmouse" IsChecked="True" Content="Mouse" Margin="10,10,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Height="15" Width="56" />
+                            <Button Content="Start" HorizontalAlignment="Left" Margin="15,42,0,0" Width="80"  VerticalAlignment="Top" Click="Hndl_ActioList" Grid.ColumnSpan="2" Height="20"/>
+                            <Button Content="Stop" HorizontalAlignment="Left" Margin="359,42,0,0" Width="80"  VerticalAlignment="Top" Click="Hndl_removeHook" Height="20"/>
 
 
-                <GridSplitter Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center"  Background="DarkGray"  ShowsPreview="True"  Height="690"   Width="5"  />
-            
-                <Image Grid.Column="2" Name="ScreenShot" HorizontalAlignment="Center" Height="400" Margin="10,30,10,0" VerticalAlignment="Top" Width="Auto" />
-                <TextBox Grid.Column="2" HorizontalAlignment="Left" Margin="15,0,0,50" TextWrapping="Wrap" Name="Folder" Text="please select the Path"  VerticalAlignment="Bottom" Width="380"/>
-                <Button  Content="Open Directory"  Grid.Column="2" HorizontalAlignment="Left"   Margin="14,0,0,73" VerticalAlignment="Bottom" Width="80" Click="Hndl_SetDirectoryDialog"/>
-                <Button  Content="Save"  Grid.Column="2" HorizontalAlignment="Right"   Margin="0,0,10,50" VerticalAlignment="Bottom" Width="80" Click="Hndl_Save"/>
+                            <ListView Background="#FFEAECED" Name="ActionList" Height="500"  HorizontalAlignment="Left" Margin="10,73,0,0" Width="450" VerticalAlignment="Top" Grid.ColumnSpan="4" BorderBrush="#FF88898E"  >
 
+                            </ListView>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="Screen Capture" Width="100">
+                        <Grid>
+                            <Image Name="ScreenShot" HorizontalAlignment="Center" Height="400" Margin="10,30,10,0" VerticalAlignment="Top" Width="Auto"/>
+                            <TextBox HorizontalAlignment="Left" Margin="15,0,0,50" TextWrapping="Wrap" Name="Folder" Text="Please select the Path" VerticalAlignment="Bottom" Width="380"/>
+                            <Button Content="Open Directory" HorizontalAlignment="Left" Margin="14,0,0,73" VerticalAlignment="Bottom" Width="80" Click="Hndl_SetDirectoryDialog"/>
+                            <Button Content="Save" HorizontalAlignment="Right" Margin="0,0,10,50" VerticalAlignment="Bottom" Width="80" Click="Hndl_Save"/>
+                            <Label Content="Nitish kumar" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Height="25" Margin="0,0,0,15"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
 
-    <Grid x:Name="main" Margin="0,0,0,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-
-        <Button Content="Capture Screen" Name="btnCaptureScreen" HorizontalAlignment="Right" Margin="0,10,18,0" Click="Hndl_CaptureScreen" VerticalAlignment="Top"/>
-        <Button Content="Highlight Window" HorizontalAlignment="Left" Margin="10,10,10,0" Click="Hndl_Highlight_win" VerticalAlignment="Top"/>
-        <ListView ItemsSource="{Binding RunningProcesses}"  Name="ProcessList" Height="560" HorizontalAlignment="Center" Width="AUto" VerticalAlignment="Center" >
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding ProcessName}" Width="150"/>
-                    <GridViewColumn DisplayMemberBinding="{Binding MainWindowTitle}" Header="WindowTitle" Width="220"/>
-                    <GridViewColumn Header="Process ID" DisplayMemberBinding="{Binding Id}" Width="80" />
-                    <!-- Add more columns as needed -->
-                </GridView>
-            </ListView.View>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="ContextMenu">
-                        <Setter.Value>
-                            <ContextMenu>
-                                <MenuItem Header="MenuItem1" />
-                                <MenuItem Header="MenuItem2"  />
-                                <!-- Add more menu items as needed -->
-                            </ContextMenu>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>
-        </ListView>
-
-
-        <GridSplitter Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Background="DarkGray" ShowsPreview="True" Height="630" Margin="0,0,0,20" Width="5"/>
-        <TabControl Grid.Column="2" >
-            <TabItem Header="Action" Width="100">
-                <Grid >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="23*"/>
-                        <ColumnDefinition Width="92*"/>
-                        <ColumnDefinition Width="85*"/>
-                        <ColumnDefinition Width="292*"/>
-                    </Grid.ColumnDefinitions>
-                    <CheckBox x:Name="chkkeyboard" IsChecked="True" Content="Keyboard" Margin="15,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="74" Height="22" Grid.ColumnSpan="2"   ></CheckBox>
-                    <CheckBox x:Name="chkmouse" IsChecked="True" Content="Mouse" Margin="2,10,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Grid.Column="2" Height="15" Width="56" />
-                    <Button Content="Start" HorizontalAlignment="Left" Margin="15,42,0,0" Width="80"  VerticalAlignment="Top" Click="Hndl_ActioList" Grid.ColumnSpan="2" Height="20"/>
-                    <Button Content="Stop" HorizontalAlignment="Left" Margin="0,42,0,0" Width="80"  VerticalAlignment="Top" Click="Hndl_removeHook" Grid.Column="2" Height="20"/>
-
-
-                    <ListView Name="ActionList" Height="550"  HorizontalAlignment="Left" Margin="10,73,0,0" Width="450" VerticalAlignment="Top" Grid.ColumnSpan="4" >
-
-                    </ListView>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Screen Capture" Width="100">
-                <Grid>
-                    <Image Name="ScreenShot" HorizontalAlignment="Center" Height="400" Margin="10,30,10,0" VerticalAlignment="Top" Width="Auto"/>
-                    <TextBox HorizontalAlignment="Left" Margin="15,0,0,50" TextWrapping="Wrap" Name="Folder" Text="Please select the Path" VerticalAlignment="Bottom" Width="380"/>
-                    <Button Content="Open Directory" HorizontalAlignment="Left" Margin="14,0,0,73" VerticalAlignment="Bottom" Width="80" Click="Hndl_SetDirectoryDialog"/>
-                    <Button Content="Save" HorizontalAlignment="Right" Margin="0,0,10,50" VerticalAlignment="Bottom" Width="80" Click="Hndl_Save"/>
-                    <Label Content="Nitish kumar" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="80" Height="25" Margin="0,0,0,15"/>
-                </Grid>
-            </TabItem>
-
-        </TabControl>
-
-        <ProgressBar Grid.Column="0" VerticalAlignment="Bottom" Height="15" Grid.ColumnSpan="3"/>
-        <Button Content="Refresh" HorizontalAlignment="Left" Margin="115,10,0,0" Width="50"  VerticalAlignment="Top" Click="hndl_refresh"/>
+            </Grid>
+            <ProgressBar VerticalAlignment="Bottom" Height="20"  Width="1000" HorizontalAlignment="Left"   Grid.RowSpan="1" Grid.ColumnSpan="3"/>
+        </Grid>
 
     </Grid>
 </Window>
