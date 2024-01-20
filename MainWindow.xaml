@@ -6,6 +6,39 @@
         xmlns:local="clr-namespace:Spy"
         mc:Ignorable="d"
         Title="Spy" Height="700" Width="1000" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Background="White">
+    <TabControl>
+        <TabItem Header="Tab 1">
+            <Grid x:Name="main" Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Button Content="Capture Screen" Name="btnCaptureScreen" HorizontalAlignment="Right" Margin="0,10,18,0" Click="Hndl_CaptureScreen" VerticalAlignment="Top"/>
+                <Button Content="Highlight Window" HorizontalAlignment="Left" Margin="10,10,10,0" Click="Hndl_Highlight_win" VerticalAlignment="Top"/>
+
+                
+                <ListView Name="ProcessList" Height="560" ItemsSource="{Binding P_Entries}" HorizontalAlignment="Left" Width="470" Margin="10" VerticalAlignment="Center" >
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="P_Entries">
+                            <GridViewColumn DisplayMemberBinding="{Binding ProcessName}" Header="Process Name" Width="150"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding MainWindowTitle}" Header="WindowTitle" Width="200"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding Id}" Header="Process ID" Width="80"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+
+
+                <GridSplitter Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center"  Background="DarkGray"  ShowsPreview="True"  Height="690"   Width="5"  />
+            
+                <Image Grid.Column="2" Name="ScreenShot" HorizontalAlignment="Center" Height="400" Margin="10,30,10,0" VerticalAlignment="Top" Width="Auto" />
+                <TextBox Grid.Column="2" HorizontalAlignment="Left" Margin="15,0,0,50" TextWrapping="Wrap" Name="Folder" Text="please select the Path"  VerticalAlignment="Bottom" Width="380"/>
+                <Button  Content="Open Directory"  Grid.Column="2" HorizontalAlignment="Left"   Margin="14,0,0,73" VerticalAlignment="Bottom" Width="80" Click="Hndl_SetDirectoryDialog"/>
+                <Button  Content="Save"  Grid.Column="2" HorizontalAlignment="Right"   Margin="0,0,10,50" VerticalAlignment="Bottom" Width="80" Click="Hndl_Save"/>
 
 
     <Grid x:Name="main" Margin="0,0,0,0">
