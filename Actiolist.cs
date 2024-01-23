@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Forms;
 
 
@@ -24,12 +26,24 @@ namespace Spy
         [StructLayout(LayoutKind.Sequential)]
         public struct MSLLHOOKSTRUCT
         {
-            public POINT pt;
-            public uint mouseData;
+             public POINT pt;
+             public uint mouseData;
+             public uint flags;
+             public uint time;
+             public IntPtr dwExtraInfo;
+        }
+
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct KBDLLHOOKSTRUCT
+        {
+            public uint vkCode;
+            public uint scanCode;
             public uint flags;
             public uint time;
-            public IntPtr dwExtraInfo;
+            public uint dwExtraInfo;
         }
+
         private const int WH_KEYBOARD_LL = 13;
         private const int WH_MOUSE_LL = 14;
         private const int WM_KEYDOWN = 0x0100;
@@ -73,7 +87,7 @@ namespace Spy
         [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
-
+        public static int selectedpid;
         private static System.Windows.Controls.ListView _actionList; // Static variable to store the reference
 
         public static void SetActionList(System.Windows.Controls.ListView actionList)
@@ -83,20 +97,19 @@ namespace Spy
 
         public static void StartHook(int processId, bool isKChecked, bool isMChecked)
         {
+            selectedpid = processId;
             Process process = Process.GetProcessById(processId);
             SetForegroundWindow(process.MainWindowHandle);
-            // Get the currently active process
-            Process activeProcess = GetActiveProcess();
+            
 
             // Display information about the active process
-            if (activeProcess != null)
+            if (process != null)
             {
-                Console.WriteLine($"Active Process Name: {activeProcess.ProcessName}");
-                Console.WriteLine($"Active Process ID: {activeProcess.Id}");
+               
                /* if (activeProcess.Id == processId)
                 {*/
-                    if (isKChecked) keyboardHook = SetHook(keyboardProc, WH_KEYBOARD_LL, process.MainWindowHandle);
-                    if (isMChecked) mouseHook = SetHook(mouseProc, WH_MOUSE_LL, process.MainWindowHandle);
+                    if (isKChecked) keyboardHook = SetKBHook(keyboardProc, WH_KEYBOARD_LL, process.MainWindowHandle);
+                    if (isMChecked) mouseHook = SetMSHook(mouseProc, WH_MOUSE_LL, process.MainWindowHandle);
                    
                 //}
             }
@@ -111,11 +124,11 @@ namespace Spy
         public static void removeHook()
         {
             // Unhook the hooks when the application exits
-            UnhookWindowsHookEx(keyboardHook);
             UnhookWindowsHookEx(mouseHook);
+            UnhookWindowsHookEx(keyboardHook);
         }
 
-        private static IntPtr SetHook(Delegate hookProc, int hookType, IntPtr handle)
+        private static IntPtr SetKBHook(Delegate hookProc, int hookType, IntPtr handle)
         {
 
             IntPtr hModule = GetModuleHandle(handle.ToString());
@@ -123,19 +136,42 @@ namespace Spy
 
         }
 
-        private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        private static IntPtr SetMSHook(Delegate hookProc, int hookType, IntPtr handle)
         {
-            if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
-            {
-                int vkCode = Marshal.ReadInt32(lParam);
-                Console.WriteLine($"Key pressed: {((Keys)vkCode).ToString()}");
-                //MessageBox.Show($"Key pressed: {((Keys)vkCode).ToString()}");
-                // Check if _actionList is set
-                if (_actionList != null)
-                {
-                        _actionList.Items.Add(((Keys)vkCode).ToString());
-                }
 
+            IntPtr hModule = GetModuleHandle(handle.ToString());
+            return SetWindowsHookEx(hookType, hookProc as LowLevelMouseProc, hModule, 0);
+
+        }
+
+        private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        {   
+            // Get the currently active process
+            Process activeProcess = GetActiveProcess();
+            if (activeProcess != null)
+            {
+                if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN && selectedpid == activeProcess.Id)
+                {
+                    int vkCode = Marshal.ReadInt32(lParam);
+                    Console.WriteLine($"Key pressed: {((Keys)vkCode).ToString()}");
+                    KBDLLHOOKSTRUCT KBhookStruct = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
+                    if (_actionList != null)
+                    {
+                        // Create an instance of ActionListItem
+                        ActionListItem actionItem = new ActionListItem
+                        {
+                            Type = "Key Pressed",
+                            Struct = GetKBStructItems(KBhookStruct),
+                            Value = ((Keys)KBhookStruct.vkCode).ToString()
+                        };
+
+                        // Add the item to the ListView using data binding
+                        _actionList.Items.Add(actionItem);
+                        _actionList.ScrollIntoView(actionItem);
+
+                    }
+
+                }
             }
 
             return CallNextHookEx(keyboardHook, nCode, wParam, lParam);
@@ -143,18 +179,73 @@ namespace Spy
 
         private static IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONUP)
-            {
-                MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
-                Console.WriteLine($"Mouse move at X: {hookStruct.pt.x}, Y: {hookStruct.pt.y}");
-                MessageBox.Show("mouse clicked");
+            // Get the currently active process
+            Process activeProcess = GetActiveProcess();
+            if(activeProcess != null) { 
+                if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONUP && selectedpid == activeProcess.Id)
+                {
+                    MSLLHOOKSTRUCT MShookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                    if (_actionList != null)
+                    {
+                    
+                        // Create an instance of ActionListItem
+                        ActionListItem actionItem = new ActionListItem
+                        {
+                            Type = "Mouse Down",
+                            Struct = GetMSStructItems(MShookStruct),
+                            Value = "-"
+                        };
+
+                        // Add the item to the ListView using data binding
+                        _actionList.Items.Add(actionItem);
+                        _actionList.ScrollIntoView(actionItem);
+                    }
+                }
             }
 
             return CallNextHookEx(mouseHook, nCode, wParam, lParam);
         }
 
+        private static ObservableCollection<StructItem> GetMSStructItems(MSLLHOOKSTRUCT hookStruct)
+        {
+            ObservableCollection<StructItem> structItems = new ObservableCollection<StructItem>();
 
+            StructItem rootNode = new StructItem
+            {
+                Name = "struct",
+                StructValue = $"pt: ({hookStruct.pt.x}, {hookStruct.pt.y})" + Environment.NewLine +
+                              $"mouseData: {hookStruct.mouseData}" + Environment.NewLine +
+                              $"flags: {hookStruct.flags}" + Environment.NewLine +
+                              $"time: {hookStruct.time}" + Environment.NewLine +
+                              $"dwExtraInfo: {hookStruct.dwExtraInfo}",
+                IsExpanded = false // Set this to true if you want it expanded by default
+            };
 
+            structItems.Add(rootNode);
+
+            return structItems;
+        }
+
+        private static ObservableCollection<StructItem> GetKBStructItems(KBDLLHOOKSTRUCT hookStruct)
+        {
+            ObservableCollection<StructItem> structItems = new ObservableCollection<StructItem>();
+
+            StructItem rootNode = new StructItem
+            {
+                Name = "struct",
+                StructValue = $"vkCode: ({hookStruct.vkCode})" + Environment.NewLine +
+                              $"mouseData: {hookStruct.scanCode}" + Environment.NewLine +
+                              $"flags: {hookStruct.flags}" + Environment.NewLine +
+                              $"time: {hookStruct.time}" + Environment.NewLine +
+                              $"dwExtraInfo: {hookStruct.dwExtraInfo}",
+
+        IsExpanded = false // Set this to true if you want it expanded by default
+            };
+
+            structItems.Add(rootNode);
+
+            return structItems;
+        }
 
         static Process GetActiveProcess()
         {
@@ -173,4 +264,19 @@ namespace Spy
 
 
     }
+}
+public class ActionListItem
+{
+    public string Type { get; set; }
+    public ObservableCollection<StructItem> Struct { get; set; } = new ObservableCollection<StructItem>(); // ObservableCollection for dynamic updates
+    public string Value { get; set; }
+}
+
+public class StructItem
+{
+    public string Name { get; set; }
+    public string Value { get; set; }
+    public string StructValue { get; set; } // Add this property
+    public ObservableCollection<StructItem> Children { get; set; } = new ObservableCollection<StructItem>();
+    public bool IsExpanded { get; set; } // Add this property
 }

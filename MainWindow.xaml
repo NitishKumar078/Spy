@@ -56,9 +56,44 @@
                             <CheckBox x:Name="chkkeyboard" IsChecked="True" Content="Keyboard" Margin="83,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="74" Height="22"   />
                             <CheckBox x:Name="chkmouse" IsChecked="True" Content="Mouse" Margin="10,10,0,0"  VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Height="15" Width="56" />
                             <Button Content="Start" HorizontalAlignment="Left" Margin="15,42,0,0" Width="80"  VerticalAlignment="Top" Click="Hndl_ActioList" Grid.ColumnSpan="2" Height="20"/>
-                            <Button Content="Stop" HorizontalAlignment="Left" Margin="359,42,0,0" Width="80"  VerticalAlignment="Top" Click="Hndl_removeHook" Height="20"/>
+                            <Button Content="Stop" HorizontalAlignment="Left" Margin="159,42,0,0" Width="80"  VerticalAlignment="Top" Click="Hndl_removeHook" Height="20"/>
+                            <Button Content="Clear" HorizontalAlignment="Left" Margin="377,42,0,0" Width="80"  VerticalAlignment="Top" Click="Hndl_clear" Height="20"/>
+                            <ListView  Background="#FFDEDEDE" Name="ActionList" Height="517"  HorizontalAlignment="Left" Margin="10,73,0,0" Width="458" VerticalAlignment="Top" BorderBrush="#FFA4A5A7">
+                               
+                                    <ListView.View>
+                                        <GridView>
+                                        <GridViewColumn Header="Type" Width="150">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Type}" HorizontalAlignment="Center"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Struct" Width="150">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <ItemsControl ItemsSource="{Binding Struct}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Expander Header="{Binding Name}" IsExpanded="{Binding IsExpanded}">
+                                                                        <TextBlock>
+                                                                             <Run Text="{Binding StructValue}" />
+                                                                        </TextBlock>
+                                                                    </Expander>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                            </GridViewColumn>
+                                        <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}" Width="150"/>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
 
-                            <ListView Background="#FFF6F8F8" Name="ActionList" Height="517"  HorizontalAlignment="Left" Margin="10,73,0,0" Width="458" VerticalAlignment="Top" BorderBrush="#FFA4A5A7"  />
+
+
+
                         </Grid>
                     </TabItem>
                     <TabItem Header="Screen Capture" Width="100">
@@ -67,7 +102,6 @@
                             Note : Default the image will be saved in the mentioned below     C:\Users\Pictures\Saved Pictures
                             </TextBlock>
                             <Image Name="ScreenShot" HorizontalAlignment="Center" Height="400" Margin="10,30,10,0" VerticalAlignment="Top" Width="Auto"/>
-                            <Label />
                             <TextBox HorizontalAlignment="Left" Margin="15,0,0,50" TextWrapping="Wrap" Name="Folder" Text="Please select the Path" VerticalAlignment="Bottom" Width="380"/>
                             <Button Content="Open Directory" HorizontalAlignment="Left" Margin="14,0,0,73" VerticalAlignment="Bottom" Width="80" Click="Hndl_SetDirectoryDialog"/>
                             <Button Content="Save" HorizontalAlignment="Right" Margin="0,0,10,50" VerticalAlignment="Bottom" Width="80" Click="Hndl_Save"/>

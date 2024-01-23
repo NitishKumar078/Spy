@@ -238,7 +238,8 @@ public partial class MainWindow : Window
         }
 
     }
-    private void OpenDirectoryDialog()
+ 
+    private void Hndl_SetDirectoryDialog(object sender, RoutedEventArgs e)
     {
         using (var folderDialog = new FolderBrowserDialog())
         {
@@ -254,9 +255,9 @@ public partial class MainWindow : Window
         }
     }
 
-    private void Hndl_SetDirectoryDialog(object sender, RoutedEventArgs e)
+    private void Hndl_clear(object sender, RoutedEventArgs e)
     {
-        OpenDirectoryDialog();
+        ActionList.Items.Clear();
     }
 
 }
