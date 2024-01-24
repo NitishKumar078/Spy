@@ -39,7 +39,7 @@ public partial class MainWindow : Window
     private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
     private const int SW_SHOWMINNOACTIVE = 7;
-
+    private const int SW_SHOWNOACTIVATE = 5;
     private const int SW_MAXIMIZE = 3;
 
     [DllImport("user32.dll")]
@@ -184,23 +184,18 @@ public partial class MainWindow : Window
 
     private void Hndl_Highlight_win(object sender, RoutedEventArgs e)
     {
-        // Assuming each item in the ListView has an 'id' property
-        int processId = ((p_Entries)ProcessList.SelectedItem).Id;
-
-
-        Process process = Process.GetProcessById(processId);
-
         if (ProcessList.SelectedItem != null)
-        {
+        {    
+         int processId = ((p_Entries)ProcessList.SelectedItem).Id;
+         Process process = Process.GetProcessById(processId);
             if (process != null)
             {
                 IntPtr hWnd = process.MainWindowHandle;
-                ShowWindow(hWnd, SW_MAXIMIZE);
+                ShowWindow(hWnd, SW_SHOWNOACTIVATE);
                 Thread.Sleep(500);
                 SetForegroundWindow(hWnd);
 
                 RECT windowRect;
-
 
                 GetWindowRect(hWnd, out windowRect);
                 int Width = windowRect.Right - windowRect.Left;
