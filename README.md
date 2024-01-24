@@ -63,6 +63,12 @@
 ## License
 This project is licensed under the MIT License.
 
-## Image
-![Capture](https://github.com/NitishKumar078/Spy/assets/101443757/74f9064a-8621-43f0-b416-dd05ef529597)
+## Capturing ScreenShot
+
+https://github.com/NitishKumar078/Spy/assets/101443757/fa3fe4da-1da5-4029-8263-542af4f49eb5
+
+
+## Capturing Action
+
+https://github.com/NitishKumar078/Spy/assets/101443757/be8d6d7d-a336-4849-a05a-56c7c0b69696
 
