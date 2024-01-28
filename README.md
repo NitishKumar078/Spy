@@ -1,5 +1,3 @@
-
-https://github.com/NitishKumar078/Spy/assets/101443757/d9252d34-b5da-4869-8b96-f65c6af310e2
 # Spy
 
 **Overview:**
