@@ -1,4 +1,4 @@
-# Spy
+![CAPTURE_SCREEN](https://github.com/NitishKumar078/Spy/assets/101443757/d5f38f24-c222-4f44-82a6-c0d2929797e7)# Spy
 
 **Overview:**
 "Spy" is a versatile and user-friendly tool designed to efficiently capture real-time images and monitor keyboard and mouse actions for specific windows on a PC. Whether creating visual guides, troubleshooting issues, or capturing moments for reference, Spy offers a seamless solution.
@@ -65,10 +65,12 @@ This project is licensed under the MIT License.
 
 ## Capturing ScreenShot
 
-https://github.com/NitishKumar078/Spy/assets/101443757/fa3fe4da-1da5-4029-8263-542af4f49eb5
+![CAPTURE_SCREEN](https://github.com/NitishKumar078/Spy/assets/101443757/5f640604-2e8c-44b8-8b54-59abe576ccfc)
 
 
 ## Capturing Action
+![Action_list](https://github.com/NitishKumar078/Spy/assets/101443757/ddaa95db-a7f2-4c6b-8ee6-d937a2442286)
 
-https://github.com/NitishKumar078/Spy/assets/101443757/be8d6d7d-a336-4849-a05a-56c7c0b69696
+
+
 
