@@ -1,4 +1,6 @@
-![CAPTURE_SCREEN](https://github.com/NitishKumar078/Spy/assets/101443757/d5f38f24-c222-4f44-82a6-c0d2929797e7)# Spy
+
+https://github.com/NitishKumar078/Spy/assets/101443757/d9252d34-b5da-4869-8b96-f65c6af310e2
+# Spy
 
 **Overview:**
 "Spy" is a versatile and user-friendly tool designed to efficiently capture real-time images and monitor keyboard and mouse actions for specific windows on a PC. Whether creating visual guides, troubleshooting issues, or capturing moments for reference, Spy offers a seamless solution.
@@ -12,6 +14,9 @@
 2. **Window Capture:**
    - Empowers users to capture images of selected windows associated with a chosen process.
    - Initiates the capture process with a simple selection of the process and clicking the "Capture" button.
+   
+https://github.com/NitishKumar078/Spy/assets/101443757/768ce69a-fb06-4a48-aeb5-9106eb936907
+
 
 3. **Real-time Image Display:**
    - Displays captured images in real-time within the application.
@@ -20,10 +25,12 @@
 4. **Highlight Process:**
    - Includes a dedicated button to highlight the selected process in the process list.
    - Enhances visibility for better tracking and monitoring.
-
+  
 5. **Monitoring Keyboard and Mouse Actions:**
    - Captures and monitors real-time keyboard and mouse actions for the selected window.
    - Enables users to track interactions within the captured window for detailed analysis.
+
+https://github.com/NitishKumar078/Spy/assets/101443757/de8226f9-1b2f-45b0-8cdc-cd08d38340f1
 
 6. **Image Saving:**
    - Allows users to save the captured images to their preferred destination.
@@ -62,15 +69,4 @@
 
 ## License
 This project is licensed under the MIT License.
-
-## Capturing ScreenShot
-
-![CAPTURE_SCREEN](https://github.com/NitishKumar078/Spy/assets/101443757/5f640604-2e8c-44b8-8b54-59abe576ccfc)
-
-
-## Capturing Action
-![Action_list](https://github.com/NitishKumar078/Spy/assets/101443757/ddaa95db-a7f2-4c6b-8ee6-d937a2442286)
-
-
-
 
