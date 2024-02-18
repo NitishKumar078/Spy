@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Emit;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Forms;
+using static Spy.Actionlist;
 
 
 namespace Spy
@@ -46,9 +40,23 @@ namespace Spy
 
         private const int WH_KEYBOARD_LL = 13;
         private const int WH_MOUSE_LL = 14;
+
+
         private const int WM_KEYDOWN = 0x0100;
+        private const int WM_KEYUP  = 0x0101;
+        private const int WM_SYSKEYDOWN = 0x0104;
+        private const int WM_SYSKEYUP = 0x0105;
+
+
+
         private const int WM_MOUSEMOVE = 0x0200;
+        private const int WM_LBUTTONDOWN = 0x0201;
         private const int WM_LBUTTONUP = 0x0202;
+        private const int WM_MOUSEWHEEL = 0x020A;
+        private const int WM_RBUTTONDOWN  =  0x0204;
+        private const int WM_RBUTTONUP = 0x0205;
+       
+
 
         private static IntPtr keyboardHook;
         private static IntPtr mouseHook;
@@ -105,13 +113,9 @@ namespace Spy
             // Display information about the active process
             if (process != null)
             {
-               
-               /* if (activeProcess.Id == processId)
-                {*/
                     if (isKChecked) keyboardHook = SetKBHook(keyboardProc, WH_KEYBOARD_LL, process.MainWindowHandle);
                     if (isMChecked) mouseHook = SetMSHook(mouseProc, WH_MOUSE_LL, process.MainWindowHandle);
                    
-                //}
             }
             else
             {
@@ -145,60 +149,122 @@ namespace Spy
         }
 
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-        {   
+        {
             // Get the currently active process
             Process activeProcess = GetActiveProcess();
+
             if (activeProcess != null)
             {
-                if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN && selectedpid == activeProcess.Id)
+
+                if (_actionList != null)
                 {
-                    int vkCode = Marshal.ReadInt32(lParam);
-                    Console.WriteLine($"Key pressed: {((Keys)vkCode).ToString()}");
-                    KBDLLHOOKSTRUCT KBhookStruct = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
-                    if (_actionList != null)
+                    if (nCode >= 0 && selectedpid == activeProcess.Id)
                     {
-                        // Create an instance of ActionListItem
-                        ActionListItem actionItem = new ActionListItem
+                        string Type, Value;
+                        KBDLLHOOKSTRUCT KBhookStruct = (KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(KBDLLHOOKSTRUCT));
+
+                        switch (wParam)
                         {
-                            Type = "Key Pressed",
-                            Struct = GetKBStructItems(KBhookStruct),
-                            Value = ((Keys)KBhookStruct.vkCode).ToString()
-                        };
+                            case WM_KEYUP:
+                                Type = "key Button Up";
+                                Value = ((Keys)KBhookStruct.vkCode).ToString();
+                                AddToList(Type, KBhookStruct, Value);
+                                break;
+                            case WM_KEYDOWN:
+                                Type = "key Button Down";
+                                Value = ((Keys)KBhookStruct.vkCode).ToString();
+                                AddToList(Type, KBhookStruct, Value);
+                                break;
+                            case WM_SYSKEYDOWN:
+                                Type = "Syskey Button Down";
+                                Value = ((Keys)KBhookStruct.vkCode).ToString();
+                                AddToList(Type, KBhookStruct, Value);
+                                break;
+                            case WM_SYSKEYUP:
+                                Type = "Syskey Button Up";
+                                Value = ((Keys)KBhookStruct.vkCode).ToString();
+                                AddToList(Type, KBhookStruct, Value);
+                                break;
 
-                        // Add the item to the ListView using data binding
-                        _actionList.Items.Add(actionItem);
-                        _actionList.ScrollIntoView(actionItem);
-
+                        }
                     }
-
                 }
             }
 
             return CallNextHookEx(keyboardHook, nCode, wParam, lParam);
         }
 
+
+        static void  AddToList(string Type, MSLLHOOKSTRUCT MShookStruct) // for mouse 
+        {
+            // Create an instance of ActionListItem
+            ActionListItem actionItem = new ActionListItem
+            {
+                Type = Type,
+                Struct = GetMSStructItems(MShookStruct),
+                Value = "-"
+            };
+
+            // Add the item to the ListView using data binding
+            _actionList.Items.Add(actionItem);
+            _actionList.ScrollIntoView(actionItem);
+        }
+        static void AddToList(string Type, KBDLLHOOKSTRUCT KBhookStruct, string value) // for keyboard 
+        {
+            // Create an instance of ActionListItem
+            ActionListItem actionItem = new ActionListItem
+            {
+                Type = Type,
+                Struct = GetKBStructItems(KBhookStruct),
+                Value = ((Keys)KBhookStruct.vkCode).ToString()
+            };
+
+            // Add the item to the ListView using data binding
+            _actionList.Items.Add(actionItem);
+            _actionList.ScrollIntoView(actionItem);
+        }
+
         private static IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
             // Get the currently active process
             Process activeProcess = GetActiveProcess();
-            if(activeProcess != null) { 
-                if (nCode >= 0 && wParam == (IntPtr)WM_LBUTTONUP && selectedpid == activeProcess.Id)
+            if(activeProcess != null) {
+               
+                if (_actionList != null)
                 {
-                    MSLLHOOKSTRUCT MShookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
-                    if (_actionList != null)
+                    if (nCode >= 0 && selectedpid == activeProcess.Id)
                     {
-                    
-                        // Create an instance of ActionListItem
-                        ActionListItem actionItem = new ActionListItem
-                        {
-                            Type = "Mouse Down",
-                            Struct = GetMSStructItems(MShookStruct),
-                            Value = "-"
-                        };
+                        string Type = "";
+                        MSLLHOOKSTRUCT MShookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
 
-                        // Add the item to the ListView using data binding
-                        _actionList.Items.Add(actionItem);
-                        _actionList.ScrollIntoView(actionItem);
+                        switch (wParam){
+                            case WM_LBUTTONUP:
+                                Type = "Mouse Left Button Up";
+                                AddToList(Type, MShookStruct);
+                                break;
+                            case WM_LBUTTONDOWN:
+                                Type = "Mouse Left Button Down";
+                                AddToList(Type, MShookStruct);
+                                break;
+                            case WM_MOUSEWHEEL:
+                                Type = "Mouse wheel";
+                                AddToList(Type, MShookStruct);
+                                break;
+                            case WM_RBUTTONUP:
+                                Type = "Mouse Right Button Up";
+                                AddToList(Type, MShookStruct);
+                                break;
+                            case WM_RBUTTONDOWN:
+                                Type = "Mouse Right Button Down";
+                                AddToList(Type, MShookStruct);
+                                break;
+                           /* case WM_MOUSEMOVE: 
+                                Type = "Mouse move";
+                                break;
+                            */
+
+                                
+                        }
                     }
                 }
             }
